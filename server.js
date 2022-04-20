@@ -1,46 +1,45 @@
 const http = require('http')
 const mongoose = require('mongoose')
-const Post = require('./model/post')
+const dotenv = require('dotenv')
 const errHeader =  require('./errHeader.js')
 const successHeader = require('./successHeader')
 const headers = require('./headers')
+const Posts = require('./model/post')
 
-mongoose.connect('mongodb://localhost:27017/todoLists')
+dotenv.config({path:'config.env'})
+const DB = process.env.DB.replace('<pwd>',process.env.DB_PASSWORD)
+mongoose.connect(DB)
     .then((res)=>console.log('連上伺服器'))
-
-
-    
-
         
 const requestListener = async (req,res)=>{
-    console.log(req.url)
- 
     let body = '';
     req.on('data', (chunk) => {
-      body += chunk;
+        body += chunk;
     })
     if (req.url === '/posts' && req.method === 'GET') {
-        const allPost = await Post.find()
-        console.log(allPost)
+        const allPost = await Posts.find()
         successHeader(res,allPost)
     } else if (req.url === '/posts' && req.method === 'POST') {
-        console.log('post')
         req.on('end',async()=>{
             try {
                 const data = JSON.parse(body)
+                console.log('data',data)
                 if(data.content){
-                    const newPost = await Post.create({
+                    console.log('dadad',data.name)
+                    const newPost = await Posts.create({
                         name: data.name,
                         content: data.content,
                         tags: data.tags,
                         type: data.type
                     })
+                    console.log(newPost)
                     successHeader(res,newPost)
                 }else{
-                    errHeader(err,data)
+                    errHeader(res)
                 }
             } catch (error) {
-                errHeader(err,data)
+                console.log(error)
+                errHeader(res,error)
             }
         })
        

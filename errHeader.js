@@ -4,7 +4,7 @@ function errHeader(res,data){
     res.writeHead(400,headers)
     res.write(JSON.stringify({
         "status":"false",
-        "data": "失敗"
+        "data": data
     }))
     res.end()
 }
