@@ -6,7 +6,7 @@ const postsSchema = new mongoose.Schema({
     },
     nameImg:{
       type: String,
-      default: '',
+      default: 'https://picsum.photos/50/50',
     },
     tags: [
         {
@@ -21,7 +21,7 @@ const postsSchema = new mongoose.Schema({
     },
     image: {
         type: String,
-        default: '',
+        default: 'https://picsum.photos/300/200',
     },
     createAt: {
         type: Date,
