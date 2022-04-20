@@ -17,20 +17,27 @@ const requestListener = async (req,res)=>{
         body += chunk;
     })
     if (req.url === '/posts' && req.method === 'GET') {
+        console.log('GET')
         const allPost = await Posts.find()
+        console.log(allPost)
         successHeader(res,allPost)
     } else if (req.url === '/posts' && req.method === 'POST') {
+        console.log('POST')
         req.on('end',async()=>{
             try {
                 const data = JSON.parse(body)
                 console.log('data',data)
                 if(data.content){
                     console.log('dadad',data.name)
+                    let now = new Date().toLocaleString();
                     const newPost = await Posts.create({
                         name: data.name,
                         content: data.content,
                         tags: data.tags,
-                        type: data.type
+                        type: data.type,
+                        image:data.image,
+                        likes: 0 ,
+                        comments: 0,
                     })
                     console.log(newPost)
                     successHeader(res,newPost)
