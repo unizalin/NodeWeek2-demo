@@ -1,8 +1,13 @@
 const mongoose = require('mongoose');
 const postsSchema = new mongoose.Schema({
+  
   name: {
     type: String,
     required: [true, '貼文姓名未填寫']
+  },
+  userImage:{
+    type: String,
+    default: ""
   },
   tags: [
     {
@@ -22,7 +27,6 @@ const postsSchema = new mongoose.Schema({
   createAt: {
     type: Date,
     default: Date.now,
-    select: false
   },
   content: {
     type: String,
@@ -37,10 +41,9 @@ const postsSchema = new mongoose.Schema({
     default: 0
   },
 });
-
 const posts = mongoose.model(
   'posts',
   postsSchema
-);
+  );
 
 module.exports = posts;
