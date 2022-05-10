@@ -1,5 +1,7 @@
 const http = require('http')
 const mongoose = require('mongoose')
+const express = require('express')
+const app = express()
 const dotenv = require('dotenv')
 const errHeader =  require('./errHeader.js')
 const successHeader = require('./successHeader')
@@ -16,11 +18,57 @@ const requestListener = async (req,res)=>{
     req.on('data', (chunk) => {
         body += chunk;
     })
+<<<<<<< HEAD
     if (req.url === '/posts' && req.method === 'GET') {
         console.log('GET')
         const allPost = await Posts.find()
         console.log(allPost)
         successHeader(res,allPost)
+=======
+    
+    if (req.url.includes('/posts') && req.method === 'GET') {
+        const allPostCount = await Posts.count()
+        //   paginate = await Posts.plugin()
+        const limit = 5
+        const result ={}
+        if(req.url.includes('page')){
+            const query =req.url.split('?')[1].split('&')
+            const page = parseInt(query[0].split('=')[1])
+            const allPost = await Posts.find().limit(limit).skip((page-1)*limit)
+
+            result.page={
+                total : Math.ceil(allPostCount/limit),
+                nonwPage : page,
+                next :{
+                    page: page+1,
+                    limit: limit
+                },
+                previous : {
+                    page: page-1,
+                    limit: limit
+                }
+            }
+            result.postLists=allPost
+        }else{
+            const page =1
+            const allPost = await Posts.find().limit(limit).skip((page-1)*limit)
+            result.page={
+                total : Math.ceil(allPostCount/limit),
+                nonwPage : page,
+                next :{
+                    page: page+1,
+                    limit: limit
+                },
+                previous : {
+                    page: page-1,
+                    limit: limit
+                }
+            }
+            result.postLists=allPost
+        }
+
+        successHeader(res,result)
+>>>>>>> bc54159201e9b19bb5d7984f84b6f16373a68e13
     } else if (req.url === '/posts' && req.method === 'POST') {
         console.log('POST')
         req.on('end',async()=>{
